@@ -1,0 +1,16 @@
+{
+  "name": "hello-world-kafka",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}

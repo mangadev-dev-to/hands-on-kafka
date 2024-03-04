@@ -6,39 +6,39 @@ Kafka is a distributed streaming platform designed for handling real-time data f
 
 To comprehend Kafka thoroughly, it's essential to understand these key definitions:
 
-- **Topic**: think of a topic as a category or a channel where messages are organized and published. It's like a virtual inbox or bulletin board where messages related to a specific theme or subject are posted.
-- **Event**: represents a piece of data or a message denoting a specific action or occurrence, which is transmitted to a topic.
-- **Producer**: acts as a sender or publisher, generating and dispatching events to topics.
-- **Consumer**: is like a receiver or a subscriber that reads and processes events from topics. It's responsible for fetching and handling messages from the topics it subscribes to.
+- **Topic**: Think of a topic as a category or a channel where messages are organized and published. It's like a virtual inbox or bulletin board where messages related to a specific theme or subject are posted.
+- **Event**: Represents a piece of data or a message denoting a specific action or occurrence, which is transmitted to a topic.
+- **Producer**: Acts as a sender or publisher, generating and dispatching events to topics.
+- **Consumer**: Is like a receiver or a subscriber that reads and processes events from topics. It's responsible for fetching and handling messages from the topics it subscribes to.
 
 ## How does it work?
 
 Let's illustrate Kafka's functionality using an e-commerce scenario with a distributed system:
 
-- **Order Service**: responsible for managing product listings and the checkout process.
-- **Inventory Service**: handles updates to product quantities
-- **Notification Service**: sends notifications to users
-- **Logging Service**: tracks activities across services
+- **Order Service**: Responsible for managing product listings and the checkout process.
+- **Inventory Service**: Handles updates to product quantities
+- **Notification Service**: Sends notifications to users
+- **Logging Service**: Tracks activities across services
 
 In this scenario, we define topics, producers, consumers, and the event contract as follows:
 
 ### Topics
 
-- **new-order-topic**: receives events related to new orders
-- **inventory-empty-topic**: receives events regarding product inventory consumption
-- **new-logging-action-topic**: receives events related to new actions from other services
+- **new-order-topic**: Receives events related to new orders
+- **inventory-empty-topic**: Receives events regarding product inventory consumption
+- **new-logging-action-topic**: Receives events related to new actions from other services
 
 ### Consumers
 
-- **Inventory Service**: consumes events from **new-order-topic**
-- **Notification Service**: consumes events from **new-order-topic** and **inventory-empty-topic**
-- **Logging Service**: consumes events from **new-logging-action-topic**
+- **Inventory Service**: Consumes events from **new-order-topic**
+- **Notification Service**: Consumes events from **new-order-topic** and **inventory-empty-topic**
+- **Logging Service**: Consumes events from **new-logging-action-topic**
 
 ### Producers
 
-- **Order Service**: produces events for **new-order-topic** and **new-logging-action-topic**
-- **Inventory Service**: produces events for **inventory-empty-topic** and **new-logging-action-topic**
-- **Notification Service**: produces events for **new-logging-action-topic**
+- **Order Service**: Produces events for **new-order-topic** and **new-logging-action-topic**
+- **Inventory Service**: Produces events for **inventory-empty-topic** and **new-logging-action-topic**
+- **Notification Service**: Produces events for **new-logging-action-topic**
 
 ### Events Contract per Topic
 

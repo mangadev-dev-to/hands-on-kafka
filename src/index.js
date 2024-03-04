@@ -23,6 +23,5 @@ const orderOne = {
 (async () => {
   await createNewOrder(orderOne);
 
-  // call createNewOrder recursively every 5 seconds
   setInterval(() => createNewOrder(orderOne), 5000);
 })();

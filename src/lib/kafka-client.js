@@ -1,7 +1,6 @@
 import { Kafka } from "kafkajs";
 
 const CLIENT_ID = "kafka-hands-on";
-// this URL must point to your local Kafka that is configured in docker-compose.yml
 const BROKERS_URL = ["localhost:29092"];
 
 export const TOPIC_NEW_ORDER = "new-order-topic";

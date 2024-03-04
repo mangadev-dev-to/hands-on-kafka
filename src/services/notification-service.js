@@ -7,11 +7,10 @@ const consumer = kafkaClient.consumer({
   groupId: "notification-service-group",
 });
 
-// an object of functions by topics to be called whenever an event arrives from that specific topic
-const funcByTopic = {
+const notificationHandlers = {
   [TOPIC_INVENTORY_EMPTY]: ({ productId }) =>
     console.log(
-      `\n### Notification Service ###\nProduct ${productId} has to be REFILLED!`
+      `\n### Notification Service ###\nProduct ${productId} needs to be refilled.`
     ),
   [TOPIC_NEW_ORDER]: ({ orderId, customerId }) =>
     console.log(
@@ -21,6 +20,7 @@ const funcByTopic = {
 
 (async () => {
   await consumer.connect();
+
   await consumer.subscribe({
     topics: [TOPIC_NEW_ORDER, TOPIC_INVENTORY_EMPTY],
     fromBeginning: true,
@@ -28,8 +28,7 @@ const funcByTopic = {
 
   await consumer.run({
     eachMessage: async ({ topic, message }) => {
-      // dynamic call specific function by incoming event topic
-      funcByTopic[topic](JSON.parse(message.value));
+      notificationHandlers[topic](JSON.parse(message.value));
     },
   });
 })();

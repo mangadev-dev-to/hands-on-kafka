@@ -16,5 +16,4 @@ class ProductInventory {
   }
 }
 
-// export directly the instance to make it a singleton
 export default new ProductInventory();

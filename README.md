@@ -1,4 +1,6 @@
-# What is Kafka in a nutshell?
+Embark on a journey into real-time data processing with Kafka! Discover how to set up Kafka clusters, build streaming applications, and unlock new insights for your projects. Whether you're a seasoned developer or a curious enthusiast, this hands-on guide will empower you to harness the full potential of Kafka.
+
+## What is Kafka in a nutshell?
 
 Kafka is a distributed streaming platform designed for handling real-time data feeds with high throughput and fault tolerance. It operates through servers and clients communicating via a high-performance TCP network protocol. Kafka can be deployed on various infrastructures including bare-metal hardware, virtual machines, and containers, both on-premise and in cloud environments.
 
@@ -9,7 +11,7 @@ To comprehend Kafka thoroughly, it's essential to understand these key definitio
 - **Producer**: acts as a sender or publisher, generating and dispatching events to topics.
 - **Consumer**: is like a receiver or a subscriber that reads and processes events from topics. It's responsible for fetching and handling messages from the topics it subscribes to.
 
-# How does it work?
+## How does it work?
 
 Let's illustrate Kafka's functionality using an e-commerce scenario with a distributed system:
 
@@ -20,25 +22,25 @@ Let's illustrate Kafka's functionality using an e-commerce scenario with a distr
 
 In this scenario, we define topics, producers, consumers, and the event contract as follows:
 
-#### Topics
+### Topics
 
 - **new-order-topic**: receives events related to new orders
 - **inventory-empty-topic**: receives events regarding product inventory consumption
 - **new-logging-action-topic**: receives events related to new actions from other services
 
-#### Consumers
+### Consumers
 
 - **Inventory Service**: consumes events from **new-order-topic**
 - **Notification Service**: consumes events from **new-order-topic** and **inventory-empty-topic**
 - **Logging Service**: consumes events from **new-logging-action-topic**
 
-#### Producers
+### Producers
 
 - **Order Service**: produces events for **new-order-topic** and **new-logging-action-topic**
 - **Inventory Service**: produces events for **inventory-empty-topic** and **new-logging-action-topic**
 - **Notification Service**: produces events for **new-logging-action-topic**
 
-#### Events Contract per Topic
+### Events Contract per Topic
 
 - **new-order-topic**:
 
@@ -108,7 +110,7 @@ In this scenario, we define topics, producers, consumers, and the event contract
 }
 ```
 
-The diagram below illustrate how it works:
+The diagram below illustrates how it works:
 
 ```mermaid
 flowchart LR
@@ -150,7 +152,9 @@ flowchart LR
 
 That's it, we have all in place to start the hands-on! 🚀🚀🚀
 
-# Hands-on
+<hr>
+
+## Hands-on
 
 ### Prerequisites
 
@@ -161,7 +165,7 @@ To follow this guide, ensure you have the following requirements:
 
 The following sub-chapters outline the main steps to start using Kafka with Node.js. To avoid confusion and ensure a smooth process, we recommend keeping the codebase of the final application accessible. You can achieve this by cloning the GitHub repository associated with this article:
 
-```
+```bash
 git clone https://github.com/manganellidev/dev-to-hands-on-kafka.git
 ```
 
@@ -570,7 +574,6 @@ npm start
 
 > **Note**: You can customize the `orderOne` object in the `index.js` file to observe different behaviors. Additionally, you can adjust the quantity in the `db.js` file.
 
-<br/>
 <hr/>
 <br/>
 

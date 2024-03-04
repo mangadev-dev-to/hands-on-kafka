@@ -2,7 +2,7 @@ Embark on a journey into real-time data processing with Kafka! Discover how to s
 
 ## What is Kafka in a nutshell?
 
-Kafka is a distributed streaming platform designed for handling real-time data feeds with high throughput and fault tolerance. It operates through servers and clients communicating via a high-performance TCP network protocol. Kafka can be deployed on various infrastructures including bare-metal hardware, virtual machines, and containers, both on-premise and in cloud environments.
+[Kafka](https://kafka.apache.org/intro) is a distributed streaming platform designed for handling real-time data feeds with high throughput and fault tolerance. It operates through servers and clients communicating via a high-performance TCP network protocol. Kafka can be deployed on various infrastructures including bare-metal hardware, virtual machines, and containers, both on-premise and in cloud environments.
 
 To comprehend Kafka thoroughly, it's essential to understand these key definitions:
 

@@ -1,42 +1,42 @@
 # What is Kafka in a nutshell?
 
-Kafka is a distributed streaming platform that is designed to handle real-time data feeds with high throughput and fault tolerance. It consists of servers and clients that communicate via a high-performance TCP network protocol. It can be deployed on bare-metal hardware, virtual machines, and containers in on-premise as well as cloud environments.
+Kafka is a distributed streaming platform designed for handling real-time data feeds with high throughput and fault tolerance. It operates through servers and clients communicating via a high-performance TCP network protocol. Kafka can be deployed on various infrastructures including bare-metal hardware, virtual machines, and containers, both on-premise and in cloud environments.
 
-And to make it work properly you need, at least, to understand these four definitions:
+To comprehend Kafka thoroughly, it's essential to understand these key definitions:
 
 - **Topic**: think of a topic as a category or a channel where messages are organized and published. It's like a virtual inbox or bulletin board where messages related to a specific theme or subject are posted.
-- **Event**: a piece of data or a message that represents a specific action or occurrence, that will be sent to a topic.
-- **Producer**: is like a sender or a publisher that generates and sends events to topics.
+- **Event**: represents a piece of data or a message denoting a specific action or occurrence, which is transmitted to a topic.
+- **Producer**: acts as a sender or publisher, generating and dispatching events to topics.
 - **Consumer**: is like a receiver or a subscriber that reads and processes events from topics. It's responsible for fetching and handling messages from the topics it subscribes to.
 
 # How does it work?
 
-Let's imagine we have an e-commerce and we have a distributed system, as follows:
+Let's illustrate Kafka's functionality using an e-commerce scenario with a distributed system:
 
-- **Order Service**: responsible for listing products and checkout process
-- **Inventory Service**: responsible for updating product quantity
-- **Notification Service**: responsible for sending notifications
-- **Logging Service**: responsible for tracking everything that happens in the services
+- **Order Service**: responsible for managing product listings and the checkout process.
+- **Inventory Service**: handles updates to product quantities
+- **Notification Service**: sends notifications to users
+- **Logging Service**: tracks activities across services
 
-For this scenario, we will define topics, producers, consumers, and events contract, as follows:
+In this scenario, we define topics, producers, consumers, and the event contract as follows:
 
 #### Topics
 
-- **new-order-topic**: receive events related to new orders
-- **inventory-empty-topic**: receive events related to inventory product quantity
-- **new-logging-action-topic**: receive events related to new actions from other services
+- **new-order-topic**: receives events related to new orders
+- **inventory-empty-topic**: receives events regarding product inventory consumption
+- **new-logging-action-topic**: receives events related to new actions from other services
 
 #### Consumers
 
 - **Inventory Service**: consumes events from **new-order-topic**
-- **Notification Service**: consumes events from **new-order-topic**, and **inventory-empty-topic**
+- **Notification Service**: consumes events from **new-order-topic** and **inventory-empty-topic**
 - **Logging Service**: consumes events from **new-logging-action-topic**
 
 #### Producers
 
-- **Order Service**: produces events to be sent to **new-order-topic** and **new-logging-action-topic**
-- **Inventory Service**: produces events to be sent to **inventory-empty-topic** and **new-logging-action-topic**
-- **Notification Service**: produces events to be sent to **new-logging-action-topic**
+- **Order Service**: produces events for **new-order-topic** and **new-logging-action-topic**
+- **Inventory Service**: produces events for **inventory-empty-topic** and **new-logging-action-topic**
+- **Notification Service**: produces events for **new-logging-action-topic**
 
 #### Events Contract per Topic
 
@@ -108,42 +108,94 @@ For this scenario, we will define topics, producers, consumers, and events contr
 }
 ```
 
-That's is it, we have all in place to start the hands-on!
+The diagram below illustrate how it works:
+
+```mermaid
+flowchart LR
+  subgraph "Kafka Broker"
+    new-order-topic[[new-order-topic]]
+    inventory-empty-topic[[inventory-empty-topic]]
+    new-logging-action-topic[[new-logging-action-topic]]
+  end
+
+  subgraph "Services"
+    OrderService(OrderService)
+    InventoryService(InventoryService)
+    NotificationService(NotificationService)
+    LoggingService(LoggingService)
+  end
+
+  OrderService -->|Produces to| new-order-topic
+  OrderService -->|Produces to| new-logging-action-topic
+  InventoryService -->|Consumes from| new-order-topic
+  InventoryService -->|Produces to| inventory-empty-topic
+  InventoryService -->|Produces to| new-logging-action-topic
+  NotificationService -->|Consumes from| new-order-topic
+  NotificationService -->|Consumes from| inventory-empty-topic
+  NotificationService -->|Produces to| new-logging-action-topic
+  LoggingService -->|Consumes from| new-logging-action-topic
+
+  linkStyle 0 stroke:green
+  linkStyle 1 stroke:green
+  linkStyle 2 stroke:blue
+  linkStyle 3 stroke:green
+  linkStyle 4 stroke:green
+  linkStyle 5 stroke:blue
+  linkStyle 6 stroke:blue
+  linkStyle 7 stroke:green
+  linkStyle 8 stroke:blue
+
+  style OrderService margin-right:20px
+```
+
+That's it, we have all in place to start the hands-on! 🚀🚀🚀
 
 # Hands-on
 
 ### Prerequisites
 
-To follow this guide, you need these two requirements:
+To follow this guide, ensure you have the following requirements:
 
-- Node.js 18+: If you have not Node.js installed on your machine, [download the installer from the official site](https://nodejs.org/en/download), launch it, and follow the wizard.
-- Docker: [Follow the installation guide for your operating system](https://docs.docker.com/get-docker/) to set up Docker on your computer.
+- Node.js 18+: If you haven't installed Node.js on your machine yet, you can download the installer from the [official Node.js website](<(https://nodejs.org/en/download)>). Once downloaded, launch the installer and follow the installation wizard.
+- Docker: Docker is required to set up Kafka on your computer. If you haven't installed Docker yet, you can follow the installation guide for your operating system provided in the [official Docker documentation](https://docs.docker.com/get-docker/).
 
-The following sub-chapters show only the main steps to start using Kafka into Node.js. To avoid getting lost, we recommend keeping the codebase of the final application at hand by cloning the GitHub repository that supports this article:
+The following sub-chapters outline the main steps to start using Kafka with Node.js. To avoid confusion and ensure a smooth process, we recommend keeping the codebase of the final application accessible. You can achieve this by cloning the GitHub repository associated with this article:
 
 ```
 git clone https://github.com/manganellidev/dev-to-hands-on-kafka.git
 ```
 
+This will give you easy access to the code examples and configurations used throughout the guide.
+
 ### Set Up Your Kafka Project
 
-Create a folder for your Node.js application, enter it, and run the npm init command below to bootstrap a new npm project:
+**Create a Project Folder**: Start by creating a folder for your Node.js application and navigate into it:
 
+```bash
+mkdir hands-on-kafka
+cd hands-on-kafka
 ```
+
+**Initialize npm Project**: Run the following command to bootstrap a new npm project:
+
+```bash
 npm init -y
 ```
 
-Install kafkajs to your project’s dependencies:
+**Install Dependencies**: Install kafkajs to your project's dependencies:
 
-```
+```bash
 npm install kafkajs
 ```
 
-Copy the `docker-compose.yml` from the Github repository to your root folder.
+**Add Docker Configuration**: Copy the `docker-compose.yml` file from the GitHub repository to the root folder of your project.
 
-Create `src/` folder and an `index.js` file inside, then create a lib, db, and services as sub folders. After that, you shall create one module for each service, a module for the kafka client, and a module for the database in memory, below is what your project's directory should contain:
+**Organize Project Structure**: Create a `src/` folder and within it, create an `index.js` file. Additionally, create the following subfolders: `lib/`, `db/`, and `services/`.
+
+**Create Modules**: Inside the `services/` folder, create a module for each service. Similarly, create modules for the Kafka client and the in-memory database. Here's how your project directory should be structured:
 
 ```
+hands-on-kafka/
 ├── node_modules/
 ├── src/
 │    └── db
@@ -163,30 +215,34 @@ Create `src/` folder and an `index.js` file inside, then create a lib, db, and s
 └── README.md
 ```
 
-In `package.json`:
+**Update `package.json`**
 
-- Add the `type` config to enable ES Modules:
+- **Enable ES Modules**: Add the type configuration to enable ES Modules:
 
-```
+```json
 "type": "module"
 ```
 
-- Add the `start` script in the scripts object to make it easier to run your application:
+- **Add Start Script**: To facilitate running your application, add a start script to the scripts object:
 
-```
+```json
 "start": "node index.js"
 ```
 
 ### Index
 
-It will import all services that will be listening/consuming the topics and publishing new events as well. Also, it will run forever creating a new order event every 5 seconds, to simulate an e-commerce scenario.
+This file serves as the entry point for the application. It imports all services responsible for consuming and publishing events related to various aspects of the e-commerce system. Additionally, it continuously generates new order events every 5 seconds to simulate ongoing activity within the system.
 
 ```Javascript
+// Import services responsible for consuming and publishing events
 import "./services/inventory-service.js";
 import "./services/logging-service.js";
 import "./services/notification-service.js";
+
+// Import function to create new order events
 import createNewOrder from "./services/order-service.js";
 
+// Define initial order details
 const orderOne = {
   orderId: "ORDER-123",
   customerId: "CUSTOMER-123",
@@ -204,40 +260,44 @@ const orderOne = {
   ],
 };
 
+// Create the initial order and schedule creation of new orders every 5 seconds
 (async () => {
   await createNewOrder(orderOne);
 
-  // call createNewOrder recursively every 5 seconds
+  // Schedule creation of new orders recursively every 5 seconds
   setInterval(() => createNewOrder(orderOne), 5000);
 })();
 ```
 
 ### Kafka Client Module
 
-Configure the Kafka client adding the following config:
+This module configures the Kafka client by specifying the required parameters. Ensure you have the following configuration added:
 
 ```Javascript
 import { Kafka } from "kafkajs";
 
+// Define constants for client ID and Kafka brokers URL
 const CLIENT_ID = "kafka-hands-on";
-// this URL must point to your local Kafka that is configured in docker-compose.yml
 const BROKERS_URL = ["localhost:29092"];
 
+// Define topics used in the application
 export const TOPIC_NEW_ORDER = "new-order-topic";
 export const TOPIC_INVENTORY_EMPTY = "inventory-empty-topic";
 export const TOPIC_NEW_LOGGING_ACTION = "new-logging-action-topic";
 
+// Initialize Kafka client with specified configuration
 const kafkaClient = new Kafka({ clientId: CLIENT_ID, brokers: BROKERS_URL });
 
 export default kafkaClient;
-
 ```
+
+Ensure that the `CLIENT_ID` and `BROKERS_URL` variables are correctly set based on your Kafka configuration. This module provides a centralized configuration for the Kafka client, making it easier to manage and reuse throughout your application.
 
 ### Services Module
 
 #### Order Service
 
-This service has a single function that will be responsible for triggering the whole messaging process. In other words, it will create a new order event and the consumers will receive this event and start doing other processes in an async fashion.
+This service module contains a single function responsible for initiating the messaging process by creating a new order event. Consumers will receive this event asynchronously to perform additional processing.
 
 ```Javascript
 import kafkaClient, {
@@ -245,19 +305,21 @@ import kafkaClient, {
   TOPIC_NEW_LOGGING_ACTION,
 } from "../lib/kafka-client.js";
 
+// Initialize Kafka producer
 const producer = kafkaClient.producer();
 
 const createNewOrder = async (input) => {
   try {
+    // Connect to Kafka broker
     await producer.connect();
 
-    // create a new event for new-order-topic
+    // Create a new event for the 'new-order-topic'
     await producer.send({
       topic: TOPIC_NEW_ORDER,
       messages: [{ value: JSON.stringify(input) }],
     });
 
-    // create a new event for new-logging-action-topic
+    // Create a new event for the 'new-logging-action-topic'
     await producer.send({
       topic: TOPIC_NEW_LOGGING_ACTION,
       messages: [
@@ -281,7 +343,7 @@ export default createNewOrder;
 
 #### Inventory Service
 
-This service has a IIFE that will be listening the `new-order-topic` for new events all the time. The other services have a similar implementation.
+This service module contains an Immediately Invoked Function Expression (IIFE) that continuously listens to the `new-order-topic` for new events. Upon receiving new order events, it processes and validates the products' inventory, updating the inventory status accordingly. Additionally, it sends events for notifications and logs actions related to inventory management.
 
 ```Javascript
 import kafkaClient, {
@@ -291,17 +353,17 @@ import kafkaClient, {
 } from "../lib/kafka-client.js";
 import productInventory from "../db/inventory.js";
 
-// the groupId must be unique. In case you have multiple instances of the inventory-service running it will ensure only one of them process that event. Which means, in case one of the instances is down it will automatically distribute to other instance of the group.
+// Initialize Kafka consumer and producer
 const consumer = kafkaClient.consumer({ groupId: "inventory-service-group" });
 const producer = kafkaClient.producer();
 
 const sendEventToNotifyProductInventoryIsEmpty = async (productId) => {
-  // create a new event for inventory-empty-topic
+  // Create a new event for 'inventory-empty-topic'
   await producer.send({
     topic: TOPIC_INVENTORY_EMPTY,
     messages: [{ value: JSON.stringify({ productId }) }],
   });
-  // create a new event for new-logging-action-topic
+  // Create a new event for 'new-logging-action-topic'
   await producer.send({
     topic: TOPIC_NEW_LOGGING_ACTION,
     messages: [
@@ -320,7 +382,7 @@ const processAndValidateProductsInventory = async (products) => {
     const prodQuantity = productInventory.product(product.productId);
     const updatedProdQuantity = prodQuantity - product.quantity;
 
-    // update product inventory
+    // Update product inventory
     productInventory.setProduct(product.productId, updatedProdQuantity);
 
     await producer.send({
@@ -336,30 +398,33 @@ const processAndValidateProductsInventory = async (products) => {
       ],
     });
 
-    // validates if the inventory is below 100 items for each product
+    // Check if inventory is below threshold and take appropriate action
     if (updatedProdQuantity <= 100) {
-      // notify that the product needs to be refilled and log action
+      // Notify product inventory is low and log action
       await sendEventToNotifyProductInventoryIsEmpty(product.productId);
 
-      // refill product inventory
+      // Refill product inventory
       productInventory.setProduct(product.productId, 109);
     }
   }
 };
 
-// Function Expression Immediately Invoked (IIFE): once this module is imported it will be listening/waiting for new events on new-order-topic forever
+// IIFE: Listen for new events on 'new-order-topic'
 (async () => {
+  // Connect to Kafka broker
   await producer.connect();
   await consumer.connect();
+
+  // Subscribe to 'new-order-topic'
   await consumer.subscribe({
     topics: [TOPIC_NEW_ORDER],
     // get all events from the beginning
-    fromBeginning: true,
+    fromBeginning: true, // Start consuming from the beginning
   });
 
+  // Run consumer
   await consumer.run({
     eachMessage: async ({ message }) => {
-      // destructure message value to get only the products from it
       const { products } = JSON.parse(message.value);
 
       await processAndValidateProductsInventory(products);
@@ -370,18 +435,26 @@ const processAndValidateProductsInventory = async (products) => {
 
 #### Logging Service
 
+This service module listens for events on the new-logging-action-topic and logs the received actions. It continuously runs, ensuring all relevant actions are logged as they occur.
+
 ```Javascript
 import kafkaClient, { TOPIC_NEW_LOGGING_ACTION } from "../lib/kafka-client.js";
 
+// Initialize Kafka consumer
 const consumer = kafkaClient.consumer({ groupId: "logging-service-group" });
 
+// IIFE: Listen for new events on 'new-logging-action-topic'
 (async () => {
+  // Connect to Kafka broker
   await consumer.connect();
+
+  // Subscribe to 'new-logging-action-topic'
   await consumer.subscribe({
     topics: [TOPIC_NEW_LOGGING_ACTION],
-    fromBeginning: true,
+    fromBeginning: true, // Start consuming from the beginning
   });
 
+  // Run consumer
   await consumer.run({
     eachMessage: async ({ message }) => {
       const { serviceName, action } = JSON.parse(message.value);
@@ -396,21 +469,24 @@ const consumer = kafkaClient.consumer({ groupId: "logging-service-group" });
 
 #### Notification Service
 
+This service module listens for events on the `new-order-topic` and `inventory-empty-topic` and performs specific actions based on the received events. It dynamically calls the appropriate function based on the incoming event topic and logs the corresponding notification.
+
 ```Javascript
 import kafkaClient, {
   TOPIC_NEW_ORDER,
   TOPIC_INVENTORY_EMPTY,
 } from "../lib/kafka-client.js";
 
+// Initialize Kafka consumer
 const consumer = kafkaClient.consumer({
   groupId: "notification-service-group",
 });
 
 // an object of functions by topics to be called whenever an event arrives from that specific topic
-const funcByTopic = {
+const notificationHandlers = {
   [TOPIC_INVENTORY_EMPTY]: ({ productId }) =>
     console.log(
-      `\n### Notification Service ###\nProduct ${productId} has to be REFILLED!`
+      `\n### Notification Service ###\nProduct ${productId} needs to be refilled.`
     ),
   [TOPIC_NEW_ORDER]: ({ orderId, customerId }) =>
     console.log(
@@ -418,18 +494,23 @@ const funcByTopic = {
     ),
 };
 
+// IIFE: Listen for new events on 'new-order-topic' and 'inventory-empty-topic'
 (async () => {
+(async () => {
+  // Connect to Kafka broker
   await consumer.connect();
+
+  // Subscribe to 'new-order-topic' and 'inventory-empty-topic'
   await consumer.subscribe({
-    // here this module is listening to two topics
     topics: [TOPIC_NEW_ORDER, TOPIC_INVENTORY_EMPTY],
     fromBeginning: true,
   });
 
+  // Run consumer
   await consumer.run({
     eachMessage: async ({ topic, message }) => {
-      // dynamic call specific function by incoming event topic
-      funcByTopic[topic](JSON.parse(message.value));
+      // Call the appropriate notification handler based on the topic
+      notificationHandlers[topic](JSON.parse(message.value));
     },
   });
 })();
@@ -437,12 +518,13 @@ const funcByTopic = {
 
 ### DB Module
 
-It contains a single module with a class to store the products quantity.
+This module contains a single class responsible for storing product quantities. It initializes with default product quantities and provides methods to retrieve and update product quantities.
 
 ```Javascript
 class ProductInventory {
   #products;
 
+  // Constructor initializes the products Map with default values
   constructor() {
     this.#products = new Map();
     this.#products.set("PRODUCT-123", 109);
@@ -458,39 +540,40 @@ class ProductInventory {
   }
 }
 
-// export directly the instance to make it a singleton
+// Export a singleton instance of ProductInventory
 export default new ProductInventory();
 ```
 
 ### Running the application
 
-Open a second terminal and start the kafka broker using the command:
+**Start Kafka Broker**: Open a second terminal and start the Kafka broker using the following command:
 
-```
+```bash
 docker-compose up
 ```
 
-Now, with the containers up and running you should be able to access the Redpanda UI that is an admin panel for the Kafka broker in the URL: http://127.0.0.1:8080
+**Access Redpanda UI**: Once the containers are up and running, you can access the Redpanda UI, an admin panel for the Kafka broker, by navigating to the following URL in your browser: http://127.0.0.1:8080
+![alt text](images/redpanda-ui.png)
 
-![alt text](redpanda-ui.png)
+**Start the Application**: Return to the primary terminal and start the application using the start script:
 
-After that you can start the application using the start script in the primary terminal:
-
-```
+```bash
 npm start
 ```
 
-In the terminal you will notice that some logs, related to the Logging Service, as image below:
-![alt text](logging.png)
+**View Logs**: In the terminal, you will observe logs related to the Logging Service, as shown below:
+![alt text](images/logging.png)
 
-And in the Redpanda UI you will notice in the Topics menu your topics are created and populated with the events, as image below:
-![alt text](redpanda-topics.png)
-![alt text](redpanda-new-order.png)
+**Monitor Topics**: In the Redpanda UI, navigate to the Topics menu to view the topics created and populated with events (messages):
+![alt text](images/redpanda-topics.png)
+![alt text](images/redpanda-new-order.png)
 
-P.S you can change the object `orderOne` present in the `index.js` to check for different behaviors. Also, you can change the quantity in the `db.js`.
+> **Note**: You can customize the `orderOne` object in the `index.js` file to observe different behaviors. Additionally, you can adjust the quantity in the `db.js` file.
 
 <br/>
 <hr/>
 <br/>
 
-That's it folks! Thanks for reading. Happy coding 🎉🎉🎉
+That's it! You have successfully set up and run the application.
+
+Happy coding! 🎉🎉🎉

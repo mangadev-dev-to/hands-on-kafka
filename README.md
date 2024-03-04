@@ -230,7 +230,7 @@ hands-on-kafka/
 - **Add Start Script**: To facilitate running your application, add a start script to the scripts object:
 
 ```json
-"start": "node index.js"
+"start": "node src/index.js"
 ```
 
 ### Index
@@ -499,7 +499,6 @@ const notificationHandlers = {
 };
 
 // IIFE: Listen for new events on 'new-order-topic' and 'inventory-empty-topic'
-(async () => {
 (async () => {
   // Connect to Kafka broker
   await consumer.connect();

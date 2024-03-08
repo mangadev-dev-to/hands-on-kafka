@@ -1,5 +1,7 @@
 # Hands-on Kafka: First Steps
 
+[dev.to/hands-on-kafka-first-steps](https://dev.to/mangadev/hands-on-kafka-first-steps-1237)
+
 Embark on a journey into real-time data processing with Kafka! Discover how to set up Kafka clusters, build streaming applications, and unlock new insights for your projects. Whether you're a seasoned developer or a curious enthusiast, this hands-on guide will empower you to harness the full potential of Kafka.
 
 ## What is Kafka in a nutshell?
